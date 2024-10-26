@@ -30,6 +30,7 @@ function copy_logs() {
 }
 
 function do_reboot() {
+    swapoff "${MNT_DIR}"/swap/swapfile || true
     umount -R "${MNT_DIR}"/boot
     umount -R "${MNT_DIR}"
     reboot
