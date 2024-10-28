@@ -1,0 +1,440 @@
+
+set $win mod4
+set $alt mod1
+
+exec_always --no-startup-id xrdb ~/.Xresources
+
+# environment variables
+#
+floating_modifier $win
+
+font pango:Fira Code 8
+
+# no borders no headers
+default_border none
+default_floating_border none
+
+# force for all windows (again required since v4.21 https://gist.github.com/lirenlin/9892945)
+for_window [class="^.*"] border none
+
+# default_orientation vertical
+focus_follows_mouse no
+mouse_warping none
+
+########################## ########################## ##########################
+########################## ##### CUSTOM TOGGLES ##### ##########################
+########################## ########################## ##########################
+
+# exec --no-startup-id keepassxc && sleep 2; i3-msg '[instance=keepassxc] mark keescratch, move scratchpad'
+# bindsym $win+ctrl+slash [con_mark="^keescratch$"] scratchpad show
+
+# bindsym $win+ctrl+slash exec show
+# exec --no-startup-id exec keepassxc
+
+########################## ########################## ##########################
+########################## ####### autostart ######## ##########################
+########################## ########################## ##########################
+
+# start the i3-service for graphical-session.target
+# https://github.com/i3/i3/issues/5186#issuecomment-1405779520
+exec --no-startup-id systemctl start --user i3-session.service
+
+exec_always --no-startup-id ~/.config/polybar/scripts/launch.sh
+
+# exec --no-startup-id /usr/bin/libinput-gestures
+
+exec --no-startup-id nextcloud
+
+exec_always --no-startup-id nm-applet
+
+########################## ########################## ##########################
+########################## ###### WINDOW RULES ###### ##########################
+########################## ########################## ##########################
+
+# use xprop to find out class and title
+#
+for_window [title="kazam"] floating enable
+for_window [title="File Transfer*"] floating enable
+for_window [title="Picture-in-Picture"] floating enable sticky enable
+
+# NOTE: use float-tag in window titles to auto float
+for_window [title="float-tag"] floating enable
+
+for_window [window_role="About"] floating enable
+for_window [window_role="Preferences"] floating enable
+for_window [window_role="^Manager"] floating enable
+for_window [window_role="pop-up"] floating enable
+for_window [window_role="bubble"] floating enable
+
+for_window [class="Anki"] floating enable
+for_window [class="Nm-connection-editor"] floating enable
+for_window [class="Psensor"] floating enable
+for_window [class="Nextcloud"] floating enable
+for_window [class="KeePassXC"] floating enable
+for_window [class="XKeyCaps"] floating enable move position center
+for_window [class="GParted"] floating enable
+for_window [class="Lxappearance"] floating enable sticky enable
+for_window [class="Nitrogen"] floating enable sticky enable
+for_window [class="Oblogout"] fullscreen enable
+for_window [class="Qtconfig-qt4"] floating enable sticky enable
+for_window [class="kmag"] floating enable sticky enable, move position right
+for_window [class="Blueman-manager"] floating enable
+for_window [class="qpwgraph"] floating enable
+
+# yuck
+for_window [class="qutebrowser"] floating enable, sticky enable, move position 50 50, resize set 1200 600
+
+########################## ########################## ##########################
+########################## ###### i3 SHORTCUTS ###### ##########################
+########################## ########################## ##########################
+
+bindsym $win+Return exec alacritty
+bindsym $win+bracketright exec alacritty -e ranger
+bindsym $win+backslash exec google-chrome-stable
+
+# bindsym Print exec scrot ~/out.png
+# bindsym $win+Print exec flameshot gui
+bindsym Print exec flameshot gui
+
+# dunst ctl
+bindsym $win+grave exec dunstctl close
+bindsym $win+shift+grave exec dunstctl history-pop
+bindsym $win+ctrl+grave exec dunstctl action
+
+# vpn menu
+bindsym $win+$alt+v exec ~/bin/rofi-vpn
+
+# Window kill command
+bindsym $win+shift+q kill
+
+# program launcher
+bindsym $win+space exec --no-startup-id rofi -show drun -display-drun ''
+bindsym $win+ctrl+space exec --no-startup-id rofi -show run -display-run ''
+
+#bindsym $win+d exec --no-startup-id rofi -run-list-command ". ~/.config/zsh_aliases.sh" -run-command "/bin/zsh -i -c '{cmd}'" -show run
+bindsym $win+shift+space exec --no-startup-id rofi -show
+
+bindsym $alt+space exec --no-startup-id rofimoji
+# run -display-run '> '
+
+# monitor switch
+bindsym $win+p exec --no-startup-id ~/.config/i3/scripts/rrandr.sh
+bindsym $win+ctrl+p exec --no-startup-id ~/bin/toggleMonitors
+bindsym $win+shift+ctrl+p exec --no-startup-id ~/bin/rofi-resolution
+bindsym XF86Display exec --no-startup-id ~/.config/i3/scripts/rrandr.sh
+
+# clipboard history
+# bindsym --release $alt+ctrl+h exec "dunstify $(gpaste-client get-history)"
+# bindsym --release $alt+ctrl+h exec "/bin/rofi-gpaste --debug &> /tmp/out"
+# bindsym --release $alt+ctrl+h exec "/home/roland/bin/rofi-gpaste --debug &> /tmp/out"
+# bindsym --release $alt+ctrl+h exec ~/bin/rofi-gpaste
+
+bindsym --release ctrl+$alt+h exec "CM_LAUNCHER=rofi clipmenu"
+# bindsym $alt+ctrl+h exec rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}' -display-clipboard '> '
+
+# change focus
+bindsym $win+h focus left
+bindsym $win+j focus down
+bindsym $win+k focus up
+bindsym $win+l focus right
+
+bindsym $win+Left focus left
+bindsym $win+Down focus down
+bindsym $win+Up focus up
+bindsym $win+Right focus right
+
+# move focused window
+bindsym $win+shift+h move left
+bindsym $win+shift+j move down
+bindsym $win+shift+k move up
+bindsym $win+shift+l move right
+
+bindsym $win+shift+Left move left
+bindsym $win+shift+Down move down
+bindsym $win+shift+Up move up
+bindsym $win+shift+Right move right
+
+# move container
+bindsym $win+shift+u move container to output left; focus output left
+bindsym $win+shift+i move container to output right; focus output right
+
+# move workspace
+bindsym $win+shift+n move workspace to output left
+bindsym $win+shift+m move workspace to output right
+
+# workspace next/prev
+bindsym $win+i workspace next
+bindsym $win+u workspace prev
+
+# TODO: make move to workspace possible
+# https://faq.i3wm.org/question/6755/shortcut-to-move-window-to-next-workspace/index.html
+# bindsym $win+$alt+shift+l workspace next
+# bindsym $win+$alt+shift+h workspace prev
+
+# workspace back and forth (with/without active container)
+#workspace_auto_back_and_forth yes
+bindsym $win+b workspace back_and_forth
+bindsym $win+shift+b move container to workspace back_and_forth; workspace back_and_forth
+
+# split orientation
+# ö
+bindsym $win+semicolon split h;exec notify-send -t 500 'tile horizontally'
+bindsym $win+v split v;exec notify-send -t 500 'tile vertically'
+# bindsym $win+q split toggle
+
+# bindsym $win+backslash exec xkeycaps -kbd PC105
+
+# toggle fullscreen mode for the focused container
+bindsym $win+f fullscreen toggle
+bindsym $win+shift+f fullscreen toggle global
+
+# change container layout (stacked, tabbed, toggle split)
+bindsym $win+s layout stacking
+bindsym $win+w layout tabbed
+bindsym $win+e layout toggle split
+
+# toggle tiling / floating
+bindsym $win+shift+ctrl+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $win+BackSpace focus mode_toggle
+
+# toggle sticky
+bindsym $win+shift+s sticky toggle
+
+# focus the parent container
+bindsym $win+a focus parent
+
+# move the currently focused window to the scratchpad
+bindsym $win+shift+question move scratchpad
+
+# Show the next scratchpad window or hide the focused scratchpad window.
+# If there are multiple scratchpad windows, this command cycles through them.
+bindsym $win+slash scratchpad show
+
+# slack scratchpad
+#
+# bindsym $win+s [instance="slack"] scratchpad show
+
+# navigate workspaces next / previous
+bindsym $win+ctrl+Right workspace next
+bindsym $win+ctrl+Left workspace prev
+
+# workspaces
+set $ws1 1
+set $ws2 2
+set $ws3 3
+set $ws4 4
+set $ws5 5
+set $ws6 6
+set $ws7 7
+set $ws8 8
+set $ws9 9
+set $ws0 0
+
+# workspace $ws1 output $main_monitor
+# workspace $ws2 output $main_monitor
+# workspace $ws3 output $main_monitor
+# workspace $ws4 output $main_monitor
+# workspace $ws5 output $main_monitor
+#
+# workspace $ws6 output $second_monitor
+# workspace $ws7 output $second_monitor
+# workspace $ws8 output $second_monitor
+# workspace $ws9 output $second_monitor
+# workspace $ws0 output $second_monitor
+
+# switch to workspace
+bindsym $win+1 workspace number $ws1
+bindsym $win+2 workspace number $ws2
+bindsym $win+3 workspace number $ws3
+bindsym $win+4 workspace number $ws4
+bindsym $win+5 workspace number $ws5
+bindsym $win+6 workspace number $ws6
+bindsym $win+7 workspace number $ws7
+bindsym $win+8 workspace number $ws8
+bindsym $win+9 workspace number $ws9
+bindsym $win+0 workspace number $ws0
+
+# Move focused container to workspace
+bindsym $win+ctrl+1 move container to workspace number $ws1
+bindsym $win+ctrl+2 move container to workspace number $ws2
+bindsym $win+ctrl+3 move container to workspace number $ws3
+bindsym $win+ctrl+4 move container to workspace number $ws4
+bindsym $win+ctrl+5 move container to workspace number $ws5
+bindsym $win+ctrl+6 move container to workspace number $ws6
+bindsym $win+ctrl+7 move container to workspace number $ws7
+bindsym $win+ctrl+8 move container to workspace number $ws8
+bindsym $win+ctrl+9 move container to workspace number $ws9
+bindsym $win+ctrl+0 move container to workspace number $ws0
+
+# Move to workspace with focused container
+bindsym $win+shift+1 move container to workspace number $ws1; workspace number $ws1
+bindsym $win+shift+2 move container to workspace number $ws2; workspace number $ws2
+bindsym $win+shift+3 move container to workspace number $ws3; workspace number $ws3
+bindsym $win+shift+4 move container to workspace number $ws4; workspace number $ws4
+bindsym $win+shift+5 move container to workspace number $ws5; workspace number $ws5
+bindsym $win+shift+6 move container to workspace number $ws6; workspace number $ws6
+bindsym $win+shift+7 move container to workspace number $ws7; workspace number $ws7
+bindsym $win+shift+8 move container to workspace number $ws8; workspace number $ws8
+bindsym $win+shift+9 move container to workspace number $ws9; workspace number $ws9
+bindsym $win+shift+0 move container to workspace number $ws0; workspace number $ws0
+
+# switch to workspace with urgent window automatically
+for_window [urgent=latest] focus
+
+# reload the configuration file
+bindsym $win+shift+c reload
+
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $win+shift+r restart
+
+bindsym $win+q exec --no-startup-id ~/.config/i3/scripts/shutdown_menu.sh
+
+# Resize window (you can also use the mouse for that)
+bindsym $win+r mode "resize"
+mode "resize" {
+        # These bindings trigger as soon as you enter the resize mode
+        bindsym h resize shrink width 10 px or 10 ppt
+        bindsym j resize grow height 10 px or 10 ppt
+        bindsym k resize shrink height 10 px or 10 ppt
+        bindsym l resize grow width 10 px or 10 ppt
+
+        # same bindings, but for the arrow keys
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        # exit resize mode: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+# fast resize with super + alt + hjkl
+bindsym $win+$alt+h resize shrink width 10 px or 10 ppt
+bindsym $win+$alt+j resize grow height 10 px or 10 ppt
+bindsym $win+$alt+k resize shrink height 10 px or 10 ppt
+bindsym $win+$alt+l resize grow width 10 px or 10 ppt
+
+# ignore transparency for current window
+bindsym $win+$alt+t exec picom-trans -c -o 100
+# reset transparency
+bindsym $win+shift+t exec picom-trans --reset
+# bindsym $win+t exec transset-df 2 -x 2 -a
+# bindsym $win+shift+t exec transset-df .8 -a
+
+# header
+bindsym $win+m border none
+bindsym $win+n border normal
+
+# toggle border
+bindsym $win+y exec --no-startup-id ~/bin/toggle-border.sh
+
+# Press $win+shift+g to enter the gap mode. Choose o or i for modifying outer/inner gaps. Press one of + / - (in-/decrement for current workspace) or 0 (remove gaps for current workspace). If you also press shift with these keys, the change will be global for all workspaces.
+set $mode_gaps Gaps: (o) outer, (i) inner
+set $mode_gaps_outer Outer Gaps: +|-|0 (local), shift + +|-|0 (global)
+set $mode_gaps_inner Inner Gaps: +|-|0 (local), shift + +|-|0 (global)
+
+bindsym $win+shift+g mode "$mode_gaps"
+
+mode "$mode_gaps" {
+        bindsym o      mode "$mode_gaps_outer"
+        bindsym i      mode "$mode_gaps_inner"
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+mode "$mode_gaps_inner" {
+        bindsym plus  gaps inner current plus 5
+        bindsym minus gaps inner current minus 5
+        bindsym 0     gaps inner current set 0
+
+        bindsym shift+plus  gaps inner all plus 5
+        bindsym shift+minus gaps inner all minus 5
+        bindsym shift+0     gaps inner all set 0
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+mode "$mode_gaps_outer" {
+        bindsym plus  gaps outer current plus 5
+        bindsym minus gaps outer current minus 5
+        bindsym 0     gaps outer current set 0
+
+        bindsym shift+plus  gaps outer all plus 5
+        bindsym shift+minus gaps outer all minus 5
+        bindsym shift+0     gaps outer all set 0
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+########################## ########################## ##########################
+########################## #########  THEME  ######## ##########################
+########################## ########################## ##########################
+
+# Set colors from Xresources
+# Change 'color7' and 'color2' to whatever colors you want i3 to use
+# from the generated scheme.
+# NOTE: The '#f0f0f0' in the lines below is the color i3 will use if
+# it fails to get colors from Xresources.
+set_from_resource $fg i3wm.foreground #f0f0f0
+set_from_resource $bg i3wm.background #f0f0f0
+set_from_resource $fgb i3wm.background_bold #f0f0f0
+
+# class                 border  backgr. text indicator child_border
+client.focused          $bg     $bg     $fgb  $bg       $bg
+client.focused_inactive $bg     $bg     $fgb  $bg       $bg
+client.unfocused        $bg     $bg     $fg  $bg       $bg
+client.urgent           $bg     $bg     $fg  $bg       $bg
+client.placeholder      $bg     $bg     $fg  $bg       $bg
+
+client.background       $bg
+
+
+
+# # set primary gruvbox colorscheme colors
+# set $bg #282828
+# set $red #cc241d
+# set $green #98971a
+# set $yellow #d79921
+# set $blue #458588
+# set $purple #b16286
+# set $aqua #689d68
+# set $gray #a89984
+# set $darkgray #1d2021
+
+# #start of window title bars & borders section
+
+# # my gruvbox
+# # class                 border  bground text    indicator child_border
+# client.focused          #A89984 #282828 #98971a #CC241D   #A89984
+# client.focused_inactive #A89984 #282828 #A89984 #CC241D   #A89984
+# client.unfocused        #282828 #504945 #A89984 #CC241D   #A89984
+# client.urgent           #3C3836 #FB4934 #3C3836 #CC241D   #3C3836
+# client.placeholder      #3C3836 #928374 #3C3836 #CC241D   #3C3836
+
+# green gruvbox
+# class                 border    |backgr   |text     |indicator  |child_border
+# client.focused          $green    $gray    $darkgray $purple     $darkgray
+# client.focused_inactive $darkgray $darkgray $yellow   $purple     $darkgray
+# client.unfocused        $darkgray $darkgray $yellow   $purple     $darkgray
+# client.urgent           $red      $red      $white    $red        $red
+
+# # blue gruvbox
+# # class                 border|backgr|text|indicator|child_border
+# client.focused          $blue $blue $darkgray $purple $darkgray
+# client.focused_inactive $darkgray $darkgray $yellow $purple $darkgray
+# client.unfocused        $darkgray $darkgray $yellow $purple $darkgray
+# client.urgent           $red $red $white $red $red
+#
+# client.background $bg
+
+# Gaps
+gaps inner 8
+gaps outer 8
+
+# smart_gaps on
+# smart_borders off
